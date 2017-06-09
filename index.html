@@ -1,0 +1,246 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang='pt_BR'>
+<head>
+<link rel="SHORTCUT ICON" href="themes/SugarAlfresco/images/sugar_icon.ico?v=WhvdK11oDjU8cIIpr7_xtQ">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<title>Meu Software</title>
+<link rel="stylesheet" type="text/css" href="cache/themes/SugarAlfresco/css/yui.css?v=WhvdK11oDjU8cIIpr7_xtQ" />
+<link rel="stylesheet" type="text/css" href="cache/themes/SugarAlfresco/css/style.css?v=WhvdK11oDjU8cIIpr7_xtQ" />
+<script type="text/javascript" src="cache/include/javascript/sugar_grp1_jquery.js?v=WhvdK11oDjU8cIIpr7_xtQ"></script>
+</head>
+<body>
+<div id="main">
+    <div id="content" class="noLeftColumn" >
+        <table style="width:100%"><tr><td><link rel="stylesheet" type="text/css" media="all" href="modules/Users/login.css?v=WhvdK11oDjU8cIIpr7_xtQ">
+    <script type='text/javascript'>
+      
+    // POST
+    $(document).ready(function(){
+
+	$('#esqueceu_senha').on('click',function(){
+		$('#forgot_password_dialog').toggle();
+		if($('#forgot_password_dialog').is(':visible')){
+			$('#esqueceu_senha img').attr('src', 'https://meusoftware.ambientelivre.com.br/index.php?entryPoint=getImage&themeName=SugarAlfresco&imageName=basic_search.gif');
+		} else {
+			$('#esqueceu_senha img').attr('src', 'https://meusoftware.ambientelivre.com.br/index.php?entryPoint=getImage&themeName=SugarAlfresco&imageName=advanced_search.gif');
+		}
+	});
+	
+	$('#generate_pwd_button').on('click', function(){
+		var dados = {};
+		dados['user_name'] = $('#fp_user_name').val();
+		dados['Users0emailAddress0'] = $('#fp_user_mail').val();
+		dados['to_pdf'] = 1;
+		dados['module'] = 'Home';
+		dados['action'] = 'index';
+		dados['entryPoint'] = 'GeneratePassword';
+		dados['link'] = 1;
+	      $.ajax({
+                 type: "post", // use type para jquery antes de 1.9.0, method par versõposteriores
+                data: dados,
+                url: "https://meusoftware.ambientelivre.com.br/index.php",
+                success: function(retorno){
+			console.log(retorno);
+			$('#generate_success').text(retorno);
+			return true;
+                },
+                error: function(retorno){
+                    return false;
+                }
+            });
+
+	});
+
+        $('#form').on('submit',function(e){
+            e.preventDefault();
+            var dados = {};
+            dados['username'] = $('#username').val();
+            dados['password'] = $('#password').val();
+		$('#post_error').text('');
+
+		
+		// prepare a data for submit
+		var loginParams = {
+			user_auth:{
+				user_name:$("#username").val(),
+				password:$("#password").val(),
+				encryption:"PLAIN"
+			},
+			application: "SugarCRM REST API"
+		};
+		var dataToPost = {
+			method: "login", 
+			input_type: "JSON", 
+			response_type: "JSON",
+			rest_data: JSON.stringify(loginParams)
+		};
+		
+        //do your own request an handle the results
+         $.ajax({
+                url: 'https://meusoftware.ambientelivre.com.br/service/v4_1/rest.php',
+                type: 'post',
+                dataType: 'json',
+                data: dataToPost,
+                success: function(result) {
+					if(result.id) {
+	 $.ajax({
+               	 type: "post", // use type para jquery antes de 1.9.0, method par versõposteriores
+                dataType: "json",
+                data: dados,
+                url: "https://meusoftware.ambientelivre.com.br/authGinga.php",
+                success: function(retorno){
+                    if(retorno.status == 'OKAY'){
+                        window.location.href=retorno.redirect;
+                    }
+                    return true;
+                },
+                error: function(retorno){
+                    return false;
+                }
+            });
+
+
+					} else {
+						$('#post_error').text('Devera introduzir um usuario e uma senha valida');
+					}
+                },
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#post_error").text("Erro ao efetuar o login");
+				}
+            });
+    });
+    });
+
+
+
+</script>
+<table cellpadding="0" align="center" width="100%" cellspacing="0" border="0" style="margin-top: 100px;">
+    <tr>
+        <td align="center">
+        <div class="loginBoxShadow">
+            <div class="loginBox">
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+                <tr>
+                    <td align="left"><br>   
+                        <img src="custom/include/images/sugar_md.png" alt="Sugar">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <div class="login">
+                        <form action="" method="post" id="form">
+                                <table cellpadding="0" cellspacing="2" border="0" align="center" width="100%">
+                                <td scope="row" colspan="2">
+                                    <span class="error" id="browser_warning" style="display:none">
+                                        <b>Warning:</b> Your browser version is no longer supported or you are using an unsupported browser.<p></p>The following browser versions are recommended:<p></p><ul><li>Internet Explorer 10 (compatibility view not supported)<li>Firefox 32.0<li>Safari 5.1<li>Chrome 37</ul>
+                                    </span>
+                                    <span class="error" id="ie_compatibility_mode_warning" style="display:none">
+                                        <b>Warning:</b> Your browser is in IE compatibility view which is not supported.
+                                    </span>
+                                </td>
+                                    <tr>
+                                        <td scope="row"><span id='post_error' class="error"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" colspan="2" width="100%" style="font-size: 12px; font-weight: normal; padding-bottom: 4px;">
+                                        </td>
+                                    </tr>
+
+                                    <tr><td>&nbsp;</td></tr>
+                                    <tr>
+                                        <td>
+                                            <table class="alfresco_input">
+                                                <tr>
+
+                                                  <td scope="row" width="30%"><label for="username">Nome do usuario</label></td>
+                           
+                                                </tr>
+                                                <tr>
+                                                    <td width="70%"><input type="text" size='35' tabindex="1" id="username" name="username"  value='' /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>   
+                                    <tr>
+                                        <td>
+                                            <table class="alfresco_input">
+                                                <tr>
+                                                    <td scope="row"><label for="password">senha:</label></td>                                      
+                                                </tr>                                                                        
+                                                <tr>
+                                                    <td width="30%"><input type="password" size='26' tabindex="2" id="password" name="password" value='' /></td>
+                                                </tr> 
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Table 3 -->
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table class="alfresco_input">
+                                                                                    <tr>
+                                                                                        <!--<td>&nbsp;</td>-->
+                                                                                        <td><input title="Entrar"  class="button primary" class="button primary" type="submit" tabindex="3" id="login_button" name="Login" value="Entrar" ><br>&nbsp;</td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                </table>
+                            </form>                         
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            </div>
+            <div class="password">
+            
+            <form action="index.php" method="post" name="fp_form" id="fp_form" >
+                <table cellpadding="0" cellspacing="2" border="0" align="center" width="100%">
+                    <tr>
+                        <td colspan="2" class="login_more">
+                        <div  style="cursor: hand; cursor: pointer; display:;">
+                            <a href='javascript:void(0)' id="esqueceu_senha"><IMG src="themes/SugarAlfresco/images/advanced_search.gif?v=WhvdK11oDjU8cIIpr7_xtQ" border="0" alt="Hide Options" id="forgot_password_dialog_options">Esqueceu-se da senha?</a>
+                        </div>
+                            <div id="forgot_password_dialog" style="display:none" >
+                                <input type="hidden" name="entryPoint" value="GeneratePassword">
+                                <table cellpadding="0" cellspacing="2" border="0" align="center" width="100%" >
+                                                    <tr>
+                                                    <td colspan="2">
+                                                            <div id="generate_success" class='error' style="display:inline;"> </div>
+                                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                                                                            <td scope="row" width="30%"><label for="fp_user_name">Nome do usuáo:</label></td>
+                                                                                                            <td width="70%"><input type="text" size='26' id="fp_user_name" name="fp_user_name"  value='' /></td>
+                                                    </tr>
+                                                    <tr>
+                                                                                                            <td scope="row" width="30%"><label for="fp_user_mail">E-mail:</label></td>
+                                                                                                            <td width="70%"><input type="text" size='26' id="fp_user_mail" name="fp_user_mail"  value='' ></td>
+                                                                                                        </tr>
+                                                    
+                                                    <tr>
+                                                        <td scope="row" width="30%"><div id='wait_pwd_generation'></div></td>
+                                                                                                            <td width="70%"><input title="Email Temp Password" class="button" type="button" style="display:inline" id="generate_pwd_button" name="fp_login" value="Submeter"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+            </div>  
+        </div>
+        </td>
+    </tr>
+</table>
+<br>
+<br><!--end body panes-->
+        </td></tr></table>
+    </div>
+    <div class="clear"></div>
+</div>
+<div id="bottomLinks">
+</body>
+</html>
